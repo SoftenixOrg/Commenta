@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments Widget Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f8f9fa;
+        }
+        
+        .demo-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .demo-title {
+            color: #212529;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-text {
+            color: #6c757d;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-content">
+        <h1 class="demo-title">Sample Blog Post</h1>
+        <p class="demo-text">
+            This is a sample blog post to demonstrate the comments widget. 
+            The widget will appear below this content and allow users to login 
+            with Google and post comments with nested replies.
+        </p>
+        <p class="demo-text">
+            Features include:
+        </p>
+        <ul class="demo-text">
+            <li>Google OAuth authentication</li>
+            <li>Nested replies support</li>
+            <li>Light/dark theme toggle</li>
+            <li>Real-time comment posting</li>
+            <li>Like functionality</li>
+            <li>Edit and delete comments</li>
+            <li>Pagination for large comment threads</li>
+            <li>Anti-spam protection</li>
+            <li>XSS protection with content sanitization</li>
+        </ul>
+    </div>
+
+    <!-- Comments Widget Container -->
+    <div id="comments"></div>
+
+    <!-- Load Widget -->
+    <link rel="stylesheet" href="widget.css">
+    <script src="widget.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            commentsWidget = new CommentsWidget({
+                containerId: 'comments',
+                contentId: 'demo-post-1', // Unique identifier for this page/post
+                apiBase: '', // Empty for same domain, or 'https://your-api-domain.com'
+                theme: 'light' // 'light' or 'dark'
+            })
+        })
+    </script>
+</body>
+</html>
