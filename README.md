@@ -402,20 +402,3 @@ npm run lint
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
-
-## Support
-
-- 📖 [Documentation](https://github.com/yourusername/disqus-alternative/wiki)
-- 🐛 [Issue Tracker](https://github.com/yourusername/disqus-alternative/issues)
-- 💬 [Discussions](https://github.com/yourusername/disqus-alternative/discussions)
-
-## Roadmap
-
-- [ ] Email notifications
-- [ ] Moderation dashboard
-- [ ] Multiple OAuth providers
-- [ ] Comment reactions
-- [ ] File attachments
-- [ ] Real-time updates with WebSockets
-- [ ] Comment threading improvements
-- [ ] Analytics dashboard
