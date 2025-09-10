@@ -39,8 +39,8 @@ const rateLimits = {
 
   // Auth rate limit
   auth: createRateLimit(
-    15 * 60 * 1000, // 15 minutes
-    10, // 10 auth attempts per 15 minutes
+    1 * 60 * 1000, // 15 minutes
+    6, // 10 auth attempts per 15 minutes
     "Too many authentication attempts, please try again later.",
   ),
 

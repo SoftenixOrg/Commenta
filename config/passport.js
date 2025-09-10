@@ -22,7 +22,7 @@ passport.use(
         ])
 
         if (existingUsers.length > 0) {
-          await pool.execute("UPDATE u sers SET username = ?, avatar_url = ? WHERE id = ?", [
+          await pool.execute("UPDATE users SET username = ?, avatar_url = ? WHERE id = ?", [
             username,
             avatarUrl,
             existingUsers[0].id,
