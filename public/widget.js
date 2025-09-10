@@ -130,11 +130,21 @@ class CommentsWidget {
   }
 
   async likeComment(commentId) {
+    if (!this.currentUser) {
+      this.showError("Please login to like comments")
+      return
+    }
+
     try {
-      const response = await fetch(`${this.apiBase}/api/comments/${commentId}/like`, { method: "POST", credentials: "include" })
+      const response = await fetch(`${this.apiBase}/api/comments/${commentId}/like`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ userId: this.currentUser.id })
+      })
       const data = await response.json()
       if (data.status === "success") {
-        this.updateCommentInList(commentId, data.data)
+        this.updateCommentInList(commentId, data.data.updatedComment)
         this.renderComments()
       } else this.showError(data.message)
     } catch (error) {
@@ -142,6 +152,7 @@ class CommentsWidget {
       console.error("Like comment error:", error)
     }
   }
+
 
   updateCommentInList(commentId, updatedComment) {
     for (let i = 0; i < this.comments.length; i++) {
@@ -306,7 +317,7 @@ class CommentsWidget {
         </div>
         <div class="comment-content" id="content-${comment.id}">${this.escapeHtml(comment.content)}</div>
         <div class="comment-actions">
-          <button class="action-btn like-btn" data-id="${comment.id}">👍 ${comment.likes}</button>
+          <button class="action-btn like-btn" data-id="${comment.id}">❤️ ${comment.likes}</button>
           ${this.currentUser && !isReply ? `<button class="action-btn reply-btn" data-id="${comment.id}">Reply</button>` : ""}
           ${canEdit ? `<button class="action-btn edit-btn" data-id="${comment.id}">Edit</button><button class="action-btn delete-btn" data-id="${comment.id}">Delete</button>` : ""}
         </div>

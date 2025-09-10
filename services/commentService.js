@@ -166,16 +166,56 @@ class CommentService {
   }
 
   // Like comment
-  static async likeComment(id) {
-    const [result] = await pool.execute("UPDATE comments SET likes = likes + 1 WHERE id = ? AND status = 'visible'", [
-      id,
-    ])
+  static async likeComment(commentId, userId) {
+    const connection = await pool.getConnection(); // Transaction için bağlantı al
+    await connection.beginTransaction();
 
-    if (result.affectedRows === 0) {
-      throw new Error("Comment not found")
+    try {
+      // 1. Kullanıcının bu yorumu daha önce beğenip beğenmediğini kontrol et
+      const [existingLike] = await connection.execute(
+        "SELECT id FROM likes WHERE user_id = ? AND comment_id = ?",
+        [userId, commentId]
+      );
+
+      let liked = false;
+
+      if (existingLike.length > 0) {
+        // 2a. Eğer zaten beğenmişse: beğeniyi geri al
+        // likes tablosundan kaydı sil
+        await connection.execute("DELETE FROM likes WHERE id = ?", [existingLike[0].id]);
+
+        // comments tablosundaki sayacı azalt (0'ın altına düşmemesini sağla)
+        await connection.execute(
+          "UPDATE comments SET likes = GREATEST(0, likes - 1) WHERE id = ?",
+          [commentId]
+        );
+        liked = false; // Beğeni geri alındı
+      } else {
+        // 2b. Eğer beğenmemişse: beğeniyi ekle
+        // likes tablosuna yeni kayıt ekle
+        await connection.execute("INSERT INTO likes (user_id, comment_id) VALUES (?, ?)", [userId, commentId]);
+
+        // comments tablosundaki sayacı artır
+        await connection.execute("UPDATE comments SET likes = likes + 1 WHERE id = ?", [commentId]);
+        liked = true; // Beğeni eklendi
+      }
+
+      // 3. Transaction'ı onayla
+      await connection.commit();
+
+      // 4. Güncellenmiş yorum bilgisini ve beğeni durumunu döndür
+      const updatedComment = await this.getCommentById(commentId);
+      return { updatedComment, liked };
+
+    } catch (error) {
+      // Hata olursa tüm işlemleri geri al
+      await connection.rollback();
+      console.error("Like comment transaction failed:", error);
+      throw new Error("Could not update like status.");
+    } finally {
+      // Bağlantıyı serbest bırak
+      connection.release();
     }
-
-    return this.getCommentById(id)
   }
 }
 
