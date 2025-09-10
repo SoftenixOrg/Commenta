@@ -318,7 +318,7 @@ class CommentsWidget {
         <div class="comment-content" id="content-${comment.id}">${this.escapeHtml(comment.content)}</div>
         <div class="comment-actions">
           <button class="action-btn like-btn" data-id="${comment.id}">❤️ ${comment.likes}</button>
-          ${this.currentUser && !isReply ? `<button class="action-btn reply-btn" data-id="${comment.id}">Reply</button>` : ""}
+          ${this.currentUser ? `<button class="action-btn reply-btn" data-id="${comment.id}">Reply</button>` : ""}
           ${canEdit ? `<button class="action-btn edit-btn" data-id="${comment.id}">Edit</button><button class="action-btn delete-btn" data-id="${comment.id}">Delete</button>` : ""}
         </div>
         <div id="reply-form-${comment.id}"></div>
@@ -326,6 +326,7 @@ class CommentsWidget {
       </div>
     `
   }
+
 
   bindCommentActions() {
     this.container.querySelectorAll(".like-btn").forEach(btn => btn.addEventListener("click", (e) => this.likeComment(e.target.dataset.id)))

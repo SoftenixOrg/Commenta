@@ -85,44 +85,50 @@ class CommentService {
     return comments[0] || null
   }
 
+  static async getReplies(parentId) {
+    const [replies] = await pool.execute(
+      `
+    SELECT c.*, u.username, u.avatar_url
+    FROM comments c
+    JOIN users u ON c.user_id = u.id
+    WHERE c.parent_id = ? AND c.status = 'visible'
+    ORDER BY c.created_at ASC
+    `,
+      [parentId]
+    );
+
+    for (const reply of replies) {
+      reply.replies = await this.getReplies(reply.id);
+    }
+
+    return replies;
+  }
+
   static async getCommentsByContentId(contentId, page = 1, limit = 20) {
-    const offset = (page - 1) * limit
-    const limitInt = parseInt(limit, 10)
-    const offsetInt = parseInt(offset, 10)
+    const offset = (page - 1) * limit;
+    const limitInt = parseInt(limit, 10);
+    const offsetInt = parseInt(offset, 10);
 
     const [rootComments] = await pool.query(
       `
-  SELECT c.*, u.username, u.avatar_url,
-    (SELECT COUNT(*) FROM comments WHERE parent_id = c.id AND status = 'visible') as reply_count
-  FROM comments c 
-  JOIN users u ON c.user_id = u.id 
-  WHERE c.content_id = ? AND c.parent_id IS NULL AND c.status = 'visible'
-  ORDER BY c.created_at DESC
-  LIMIT ${limitInt} OFFSET ${offsetInt}
-  `,
-      [contentId]
-    )
+    SELECT c.*, u.username, u.avatar_url
+    FROM comments c 
+    JOIN users u ON c.user_id = u.id 
+    WHERE c.content_id = ? AND c.parent_id IS NULL AND c.status = 'visible'
+    ORDER BY c.created_at DESC
+    LIMIT ? OFFSET ?
+    `,
+      [contentId, limitInt, offsetInt]
+    );
 
     for (const comment of rootComments) {
-      const [replies] = await pool.execute(
-        `
-        SELECT c.*, u.username, u.avatar_url
-        FROM comments c 
-        JOIN users u ON c.user_id = u.id 
-        WHERE c.parent_id = ? AND c.status = 'visible'
-        ORDER BY c.created_at ASC
-      `,
-        [comment.id],
-      )
-
-      comment.replies = replies
+      comment.replies = await this.getReplies(comment.id);
     }
 
-    // Get total count
     const [totalCount] = await pool.execute(
       "SELECT COUNT(*) as total FROM comments WHERE content_id = ? AND parent_id IS NULL AND status = 'visible'",
       [contentId],
-    )
+    );
 
     return {
       comments: rootComments,
@@ -132,8 +138,9 @@ class CommentService {
         total: totalCount[0].total,
         totalPages: Math.ceil(totalCount[0].total / limit),
       },
-    }
+    };
   }
+
 
   // Update comment
   static async updateComment(id, userId, content) {
