@@ -8,7 +8,7 @@ A modern, secure, and feature-rich comment system built as an open-source altern
 - Google OAuth 2.0 integration
 - CSRF protection
 - XSS protection with content sanitization
-- Rate limiting (5 comments/minute per IP)
+- Rate limiting
 - Anti-spam detection
 - Security event logging
 - IP filtering capabilities
@@ -30,7 +30,7 @@ A modern, secure, and feature-rich comment system built as an open-source altern
 - Mobile-friendly interface
 
 ### 🛡️ Anti-Spam Protection
-- Time-based rate limiting (max 2 comments per 10 seconds per user)
+- Time-based rate limiting
 - Duplicate content detection
 - Spam pattern recognition
 - Content length validation
@@ -45,31 +45,31 @@ A modern, secure, and feature-rich comment system built as an open-source altern
 ### Installation
 
 1. **Clone the repository**
-   \`\`\`bash
+   ```bash
    git clone https://github.com/yourusername/disqus-alternative.git
    cd disqus-alternative
-   \`\`\`
+   ```
 
 2. **Install dependencies**
-   \`\`\`bash
+   ```bash
    npm install
-   \`\`\`
+   ```
 
 3. **Setup environment variables**
-   \`\`\`bash
+   ```bash
    cp .env.example .env
    # Edit .env with your configuration
-   \`\`\`
+   ```
 
 4. **Setup database**
-   \`\`\`bash
+   ```bash
    npm run setup
-   \`\`\`
+   ```
 
 5. **Start the server**
-   \`\`\`bash
+   ```bash
    npm run dev
-   \`\`\`
+   ```
 
 6. **Visit the demo**
    Open `http://localhost:3000/demo.html` in your browser
@@ -80,7 +80,7 @@ A modern, secure, and feature-rich comment system built as an open-source altern
 
 Create a `.env` file in the root directory:
 
-\`\`\`env
+```env
 # Database Configuration
 DB_HOST=localhost
 DB_USER=root
@@ -98,7 +98,7 @@ ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com
 # Server Configuration
 PORT=3000
 NODE_ENV=development
-\`\`\`
+```
 
 ### Google OAuth Setup
 
@@ -116,7 +116,7 @@ NODE_ENV=development
 
 Add this to your HTML page:
 
-\`\`\`html
+```html
 <!-- Comments Widget Container -->
 <div id="comments"></div>
 
@@ -133,13 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 })
 </script>
-\`\`\`
+```
 
 ### Advanced Integration
 
 For multiple comment sections or custom configuration:
 
-\`\`\`javascript
+```javascript
 // Initialize multiple widgets
 const widgets = [
   {
@@ -157,16 +157,16 @@ const widgets = [
 widgets.forEach(config => {
   new CommentsWidget(config)
 })
-\`\`\`
+```
 
 ### Embed Script
 
 For easier integration, use the embed script:
 
-\`\`\`html
+```html
 <div data-comments="unique-page-id" data-theme="light"></div>
 <script src="https://your-domain.com/widget-embed.js"></script>
-\`\`\`
+```
 
 ## API Documentation
 
@@ -185,7 +185,7 @@ Logout current user
 Check authentication status
 
 **Response:**
-\`\`\`json
+```json
 {
   "status": "success",
   "authenticated": true,
@@ -196,7 +196,7 @@ Check authentication status
     "avatar_url": "https://..."
   }
 }
-\`\`\`
+```
 
 ### Comment Endpoints
 
@@ -207,16 +207,16 @@ Create a new comment
 - `Content-Type: application/json`
 
 **Body:**
-\`\`\`json
+```json
 {
   "content_id": "page-identifier",
   "parent_id": null,
   "content": "Comment text"
 }
-\`\`\`
+```
 
 **Response:**
-\`\`\`json
+```json
 {
   "status": "success",
   "message": "Comment created successfully",
@@ -229,7 +229,7 @@ Create a new comment
     "likes": 0
   }
 }
-\`\`\`
+```
 
 #### `GET /api/comments?content_id=page-id&page=1&limit=20`
 Get comments for a page
@@ -253,11 +253,11 @@ Like a comment
 ### Production Setup
 
 1. **Environment Configuration**
-   \`\`\`bash
+   ```
    NODE_ENV=production
    COOKIE_SECURE=true
    COOKIE_SAME_SITE=strict
-   \`\`\`
+   ```
 
 2. **Database Setup**
    - Use connection pooling
@@ -274,7 +274,7 @@ Like a comment
 
 ### Docker Deployment
 
-\`\`\`dockerfile
+```dockerfile
 FROM node:18-alpine
 
 WORKDIR /app
@@ -285,11 +285,11 @@ COPY . .
 EXPOSE 3000
 
 CMD ["npm", "start"]
-\`\`\`
+```
 
 ### Nginx Configuration
 
-\`\`\`nginx
+```nginx
 server {
     listen 80;
     server_name your-domain.com;
@@ -306,7 +306,7 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 }
-\`\`\`
+```
 
 ## Customization
 
@@ -314,26 +314,26 @@ server {
 
 The widget uses CSS custom properties for easy theming:
 
-\`\`\`css
+```css
 .comments-widget {
   --bg-primary: #ffffff;
   --text-primary: #212529;
   --accent-color: #007bff;
   /* ... other variables */
 }
-\`\`\`
+```
 
 ### Custom Themes
 
 Create custom themes by overriding CSS variables:
 
-\`\`\`css
+```css
 .comments-widget.custom-theme {
   --bg-primary: #f8f9fa;
   --accent-color: #28a745;
   --border-color: #dee2e6;
 }
-\`\`\`
+```
 
 ## Troubleshooting
 
@@ -362,18 +362,18 @@ Create custom themes by overriding CSS variables:
 
 Enable debug logging:
 
-\`\`\`bash
+```bash
 NODE_ENV=development
 LOG_LEVEL=debug
-\`\`\`
+```
 
 ### Security Logs
 
 Check security events:
 
-\`\`\`bash
+```bash
 tail -f logs/security.log
-\`\`\`
+```
 
 ## Contributing
 
@@ -385,7 +385,7 @@ tail -f logs/security.log
 
 ### Development Setup
 
-\`\`\`bash
+```bash
 # Install dependencies
 npm install
 
@@ -397,7 +397,7 @@ npm test
 
 # Check code style
 npm run lint
-\`\`\`
+```
 
 ## License
 
